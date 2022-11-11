@@ -12,7 +12,7 @@
 | 190046091 | [Gustave Augusto Persijn](https://github.com/gpersijn) |
 | 170034992 | [Gustavo Afonso Pires](https://github.com/GustavoAPS)  |
 | 180113992 | [Lorrany Oliveira](https://github.com/Lorranyoliveira) |
-| 190032863 | [Lorrayne Alves](https://github.com/LorrayneCardoso)   |
+| 190032863 | [Lorrayne Alves](https://github.com/LorrayneCardozo)   |
 | 190036435 | [Pedro Henrique Carvalho](https://github.com/peh099)   |
 | 190130889 | [Sávio Cunha de Carvalho](https://github.com/savioc2)  |
 | 170164357 | [Ugor Marcilio Brandão](ubrandao)                      |
