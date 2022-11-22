@@ -22,3 +22,18 @@ checkIfListHasOne = (1 `elem` player_map!!0) ||
 append :: [Int] -> [[Int]] -> [[Int]]
 append a [] = [a]
 append a (x:xs) = x : append a xs
+
+attacked_positions = [[1]]
+
+main :: IO ()
+main = do
+
+    putStrLn "Batalha Naval"
+    
+    print(attacked_positions)
+    
+    let resultado = append [0,0] attacked_positions
+
+    print( append [1,2] (append [0,0] attacked_positions))
+
+    print(resultado)
