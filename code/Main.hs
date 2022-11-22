@@ -17,3 +17,8 @@ checkIfListHasOne = (1 `elem` player_map!!0) ||
                     (1 `elem` player_map!!2) ||
                     (1 `elem` player_map!!3) ||
                     (1 `elem` player_map!!4)
+
+-- Appending integer list to list of lists
+append :: [Int] -> [[Int]] -> [[Int]]
+append a [] = [a]
+append a (x:xs) = x : append a xs
