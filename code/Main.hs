@@ -11,5 +11,9 @@ printPlayerMap = do
     print(player_map !! 4)
     putStr("\n")
 
--- checking if the first row of the map has one
-checkIfListHasOne = 1 `elem` player_map!!0
+-- checking if the all row of the map has one
+checkIfListHasOne = (1 `elem` player_map!!0) || 
+                    (1 `elem` player_map!!1) ||
+                    (1 `elem` player_map!!2) ||
+                    (1 `elem` player_map!!3) ||
+                    (1 `elem` player_map!!4)
