@@ -43,16 +43,25 @@ runGame :: [[Int]] -> [[Int]] -> Int -> IO ()
 runGame player_one_map player_two_map points = do
 
     --if checkIfListHasOne == True
-    if points == 2
+    if points == 3
     then putStrLn "Fim de Jogo"
     else do
       putStrLn "Batalha Naval"
-      --print(attacked_positions)
-      --let resultado = append [0,0] attacked_positions
-      --print( append [1,2] (append [0,0] attacked_positions))
       printMap player_one_map
       printMap player_two_map
-      runGame player_one_map player_two_map (points + 1)
+
+      putStrLn "Jogador 1 - Qual coordenada X para atacar?"
+      x_coord <- getLine
+
+      putStrLn "Jogador 1 - Qual coordenada Y para atacar?"
+      y_coord <- getLine
+
+
+      let novoMapaJogador2 = updateMatrix player_two_map 2 ((read x_coord :: Int),(read y_coord :: Int))
+      --let resultado = append [0,0] attacked_positions
+      --print( append [1,2] (append [0,0] attacked_positions))
+      
+      runGame player_one_map novoMapaJogador2 (points + 1)
 
 
 main :: IO ()
