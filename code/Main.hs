@@ -34,15 +34,21 @@ append a (x:xs) = x : append a xs
 
 attacked_positions = [[1]]
 
+
+runGame :: Int -> IO ()
+runGame points = do
+
+    if points == 2
+    then putStrLn "Fim de Jogo"
+    else do
+      putStrLn "Batalha Naval"
+      print(attacked_positions)
+      let resultado = append [0,0] attacked_positions
+      print( append [1,2] (append [0,0] attacked_positions))
+      print(resultado)
+      runGame (points + 1)
+
+
 main :: IO ()
 main = do
-
-    putStrLn "Batalha Naval"
-    
-    print(attacked_positions)
-    
-    let resultado = append [0,0] attacked_positions
-
-    print( append [1,2] (append [0,0] attacked_positions))
-
-    print(resultado)
+  runGame 1
