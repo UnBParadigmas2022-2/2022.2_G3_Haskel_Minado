@@ -44,14 +44,17 @@ Para rodar o programa:
     
     1. Clone este repositório:
         git clone https://github.com/UnBParadigmas2022-2/2022.2_G3_Haskel_Minado.git
+        
+    2. Entre na pasta code:
+        cd code
 
-    2.Entre no Prelude, rodando a linha abaixo no terminal:
+    3. Entre no Prelude, rodando a linha abaixo no terminal:
         ghci
     
-    3.Depois de ter entrado no Prelude, rode o comando abaixo:
+    4. Depois de ter entrado no Prelude, rode o comando abaixo:
         :l teste.hs
     
-    4.Por último, rode:
+    5. Por último, rode:
         *Main> main
 
 ```
