@@ -19,8 +19,8 @@ data Player = Player Name Point
 
 
 -- maps
-player_one_map = [[1, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
-player_two_map = [[1, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
+player_one_map = [[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
+player_two_map = [[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
 
 
 -- function that takes a string and returns an IO String
@@ -68,14 +68,12 @@ printMap mapToPrint = do
     print(mapToPrint !! 1)
     print(mapToPrint !! 2)
     print(mapToPrint !! 3)
-    print(mapToPrint !! 4)
-
-                                                  
+    print(mapToPrint !! 4)                     
                                                                                                       
 -- function menu
 menu :: Players -> IO Players
 menu playerData = do
-        system "cls"
+        system "cls || clear"
         putStrLn"\n   ░█░█░█▀█░█▀▀░█░█░█▀▀░█░░░█░░░░░█▄█░▀█▀░█▀█░█▀█░█▀▄░█▀█"
         putStrLn"   ░█▀█░█▀█░▀▀█░█▀▄░█▀▀░█░░░█░░░░░█░█░░█░░█░█░█▀█░█░█░█░█"
         putStrLn"   ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░░░▀░▀░▀▀▀░▀░▀░▀░▀░▀▀░░▀▀▀"
@@ -158,7 +156,7 @@ prepareGame playerData = do
               getChar 
               menu playerData
             else do
-              player2 <- transformString "\nDigite o nome do segundo jogador:"
+              player2 <- transformString "\nDigite o nome do segundo jogador: "
               -- test if jogador 2 exists
               if not (existsPlayer playerData player2) then do
                 putStr "Esse jogador não existe! :("
@@ -169,13 +167,72 @@ prepareGame playerData = do
                 -- if players exists
                 newGame playerData player1 player2
 
+createPlayerMap :: Players -> [[Int]] -> [[Int]] -> Name -> Name -> Vez -> IO Players
+createPlayerMap playerData player_one_map player_two_map player1 player2 vez = do
+  
+    ----------------- PLAYER 1 -----------------
+    putStrLn ("\nJogador(a) " ++ player1 ++ ": Qual a primeira coordenada (x,y)?")
+    stringPlayerOne1 <- getLine     
+    let coordShipPlayerOne1 = convertStringToCoordinates stringPlayerOne1
+    let player_one_map1 = updateMatrix player_one_map 1 coordShipPlayerOne1
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_one_map1
+
+    putStrLn ("\nJogador(a) " ++ player1 ++ ": Qual a segunda coordenada (x,y)?")
+    stringPlayerOne2 <- getLine     
+    let coordShipPlayerOne2 = convertStringToCoordinates stringPlayerOne2
+    let player_one_map2 = updateMatrix player_one_map1 1 coordShipPlayerOne2
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_one_map2
+
+    putStrLn ("\nJogador(a) " ++ player1 ++ ": Qual a terceira coordenada (x,y)?")
+    stringPlayerOne3 <- getLine     
+    let coordShipPlayerOne3 = convertStringToCoordinates stringPlayerOne3
+    let final_player_one_map = updateMatrix player_one_map2 1 coordShipPlayerOne3
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap final_player_one_map
+
+    ----------------- PLAYER 2 -----------------
+    putStrLn ("\nJogador(a) " ++ player2 ++ ": Qual a primeira coordenada (x,y)?")
+    stringPlayerTwo1 <- getLine     
+    let coordShipPlayerTwo1 = convertStringToCoordinates stringPlayerTwo1
+    let player_two_map1 = updateMatrix player_two_map 1 coordShipPlayerTwo1
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_two_map1
+
+    putStrLn ("\nJogador(a) " ++ player2 ++ ": Qual a segunda coordenada (x,y)?")
+    stringPlayerTwo2 <- getLine     
+    let coordShipPlayerTwo2 = convertStringToCoordinates stringPlayerTwo2
+    let player_two_map2 = updateMatrix player_two_map1 1 coordShipPlayerTwo2
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_two_map2
+
+    putStrLn ("\nJogador(a) " ++ player2 ++ ": Qual a terceira coordenada (x,y)?")
+    stringPlayerTwo3 <- getLine     
+    let coordShipPlayerTwo3 = convertStringToCoordinates stringPlayerTwo3
+    let final_player_two_map = updateMatrix player_two_map2 1 coordShipPlayerTwo3
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap final_player_two_map
+    system "cls || clear"
+    putStrLn ("\n\n-----------------------------------------------------------------\n")
+    putStrLn ("START COMBATE: \"" ++ player1 ++ " VS " ++ player2 ++ "\"!!!")
+
+    runGame playerData final_player_one_map final_player_two_map player1 player2 0
+
 
 -- function that starts new game
 newGame :: Players -> Name -> Name -> IO Players
 newGame playerData player1 player2 = do 
     putStrLn ("\n-----------------------------------------------------------------\n")
-    putStrLn ("START COMBATE: \"" ++ player1 ++ " VS " ++ player2 ++ "\"!!!")
-    runGame playerData player_one_map player_two_map player1 player2 0
+    putStrLn ("ANTES DE INCIARMOS... DIGITE AS COORDENADAS INICIAIS DAS SUAS EMBARCÇÕES:")
+
+    createPlayerMap playerData player_one_map player_two_map player1 player2 0
                     
 
 -- game recursion function
@@ -220,19 +277,19 @@ runGame playerData player_one_map player_two_map player1 player2 vez = do
       if (vez == 0)
         then do 
           printMap player_two_map                
-          putStrLn (player1 ++ " , é a sua vez! Qual coordenadas deseja atacar (x,y)?")
+          putStrLn ("\n" ++ player1 ++ " , é a sua vez! Qual coordenadas deseja atacar (x,y)?")
           string <- getLine
           let coord = convertStringToCoordinates string
           let newMapaPlayer2 = updateMatrix player_two_map 2 coord
-          system "cls"
+          system "cls || clear"
           runGame playerData player_one_map newMapaPlayer2 player1 player2 1
         else do
           printMap player_one_map 
-          putStrLn (player2 ++ ", é a sua vez! Qual coordenada deseja para atacar (x,y)?")
+          putStrLn ("\n" ++ player2 ++ ", é a sua vez! Qual coordenada deseja para atacar (x,y)?")
           string2 <- getLine
           let coord2 = convertStringToCoordinates string2
-          let newMapaPlayer1 = updateMatrix player_two_map 2 coord2
-          system "cls"
+          let newMapaPlayer1 = updateMatrix player_one_map 2 coord2
+          system "cls || clear"
           runGame playerData newMapaPlayer1 player_two_map player1 player2 0
 
 
