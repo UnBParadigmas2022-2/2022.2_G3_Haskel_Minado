@@ -1,4 +1,4 @@
-# NomeDoProjeto
+# Haskel_Minado
 
 **Disciplina**: FGA0210 - PARADIGMAS DE PROGRAMAÇÃO - T01 <br>
 **Nro do Grupo**: 03<br>
@@ -18,24 +18,46 @@
 | 170164357 | [Ugor Marcilio Brandão](ubrandao)                      |
 
 ## Sobre 
-Descreva o seu projeto em linhas gerais. 
-Use referências, links, que permitam conhecer um pouco mais sobre o projeto.
-Capriche nessa seção, pois ela é a primeira a ser lida pelos interessados no projeto.
+
+Pensando em colocar em prática os conhecimentos adquiridos em relação ao paradigma funcional, o presente projeto tem como inspiração um [projeto da disciplina apresentado no semestre passado](https://github.com/UnBParadigmas2022-1/2022.1_G4_Funcional_BatalhaNaval), porém trazendo diferenças e melhorias. Trata-se de um jogo conhecido como batalha naval, o qual deve ser jogado com dois jogadores que possui como objetivo principal afundar os navios do seu adversário, para isto ocorrer os jogadores devem encontrar esses navios por meio de coordenadas.
 
 ## Screenshots
-Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
+
+1. A imagem abaixo apresenta o menu principal da aplicação.
+
+![Menu principal](img/menu.jpeg)
+
+2. A imagem abaixo apresenta um exemplo de visualização de ranking.
+
+![Ranking](img/ranking.jpeg)
 
 ## Instalação 
-**Linguagens**: xxxxxx<br>
+**Linguagens**: Haskell<br>
 **Tecnologias**: xxxxxx<br>
+**Pré-requisito**: Possuir o GCHI
 Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
 Insira um manual ou um script para auxiliar ainda mais.
 Gifs animados e outras ilustrações são bem-vindos!
 
+```
+Para rodar o programa:
+    
+    1. Clone este repositório:
+        git clone https://github.com/UnBParadigmas2022-2/2022.2_G3_Haskel_Minado.git
+
+    2.Entre no Prelude, rodando a linha abaixo no terminal:
+        ghci
+    
+    3.Depois de ter entrado no Prelude, rode o comando abaixo:
+        :l teste.hs
+    
+    4.Por último, rode:
+        *Main> main
+
+```
+
 ## Uso 
-Explique como usar seu projeto.
-Procure ilustrar em passos, com apoio de telas do software, seja com base na interface gráfica, seja com base no terminal.
-Nessa seção, deve-se revelar de forma clara sobre o funcionamento do software.
+Depois de seguido os passos acima, irá aparecer uma tela de menu principal em que antes de jogar, os jogadores primeiro deverão realizar o seu cadastro! Depois de cadastrado, poderão jogar e aproveitar!
 
 ## Vídeo
 Adicione 1 ou mais vídeos com a execução do projeto.
@@ -51,14 +73,14 @@ TEMPO: +/- 15min
 Apresente, brevemente, como cada membro do grupo contribuiu para o projeto.
 |Nome do Membro | Contribuição | Significância da Contribuição para o Projeto (Excelente/Boa/Regular/Ruim/Nula) |
 | -- | -- | -- |
-| Eduarda Servídio  | ---  | --- |
-| Gustave Augusto Persijn  |  --- | --- |
-| Gustavo Afonso Pires  | ---  | --- |
-| Lorrany Oliveira  | ---  | --- |
-| Lorrayne Alves  | ---  | --- |
-| Pedro Henrique Carvalho  | ---  | --- |
-| Sávio Cunha de Carvalho  | ---  | --- |
-| Ugor Marcilio Brandão  | ---  | --- |
+| Eduarda Servídio  | Ranking, leitura e escrita de arquivos (registro de jogadores), menu, alternar vez do jogador | Excelente |
+| Gustave Augusto Persijn  |  Parse das strings de leitura, implementação da funcionalidade de poder escolher a posição inicial das embarcações | Excelente |
+| Gustavo Afonso Pires  | Estruturação da lógica inicial e implementação do loop principal  | Excelente |
+| Lorrany Oliveira  | Estruturação da lógica inicial e implementação do loop principal  | Excelente |
+| Lorrayne Alves  | Ataque de uma posição (alterando o valor na matriz), Escolha da posição inicial das embarcações. | Excelente |
+| Pedro Henrique Carvalho  | Ataque de uma posição (alterando o valor na matriz), Escolha da posição inicial das embarcações.  | Excelente |
+| Sávio Cunha de Carvalho  | Organização da equipe e documentação  | Boa |
+| Ugor Marcilio Brandão  | Ranking, leitura e escrita de arquivos (registro de jogadores), menu, alternar vez do jogador | Excelente |
 
 ## Outros 
 Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não esqueça, entretanto, de informar sobre:
