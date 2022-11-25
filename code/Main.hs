@@ -5,24 +5,27 @@ import Control.Exception
 import System.Process
 import System.IO
 import System.IO.Error
+import Data.Function
 
 -- definition types
+
+type Vez = Int
 type Coordinate = (Int, Int)
-type Jogadores = [Jogador]
-type Nome = String
-type Pontuacao = Int
-data Jogador = Jogador Nome Pontuacao
+type Players = [Player]
+type Name = String
+type Point = Int
+data Player = Player Name Point
   deriving(Show,Read)
 
 
 -- maps
-player_one_map = [[1, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
-player_two_map = [[1, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
+player_one_map = [[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
+player_two_map = [[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
 
 
 -- function that takes a string and returns an IO String
-getString :: String -> IO String
-getString string = do 
+transformString :: String -> IO String
+transformString string = do 
   putStr string
   ioString <- getLine
   return ioString
@@ -42,7 +45,7 @@ convertStringToCoordinates _ = (-1, -1)
 
 
 -- function that modifies an element of the matrix
--- [Matriz] -> novovalor (x, y)
+-- [Matriz] -> newvalor (x, y)
 updateMatrix :: [[Int]] -> Int -> (Int, Int) -> [[Int]]
 updateMatrix m player_map (r,c) =
   take r m ++
@@ -56,6 +59,7 @@ append a [] = [a]
 append a (x:xs) = x : append a xs
 
 
+
 -- print of the map
 printMap :: [[Int]] -> IO ()
 printMap mapToPrint = do
@@ -64,155 +68,294 @@ printMap mapToPrint = do
     print(mapToPrint !! 1)
     print(mapToPrint !! 2)
     print(mapToPrint !! 3)
-    print(mapToPrint !! 4)
-
-
+    print(mapToPrint !! 4)                     
+                                                                                                      
 -- function menu
-menu :: Jogadores -> IO Jogadores
-menu dadosJogador = do
-        system "cls"
-        putStrLn "******************** HASKELL MINADO ********************\n"
-        putStrLn " Digite 1 para cadastrar jogador.                     " 
-        putStrLn " Digite 2 para jogar.                                  "
-        putStrLn " Digite 3 para visuzalizar o ranking.                  "
-        putStrLn " Digite 0 para sair.                                   "
+menu :: Players -> IO Players
+menu playerData = do
+        system "cls || clear"
+        putStrLn"\n   ░█░█░█▀█░█▀▀░█░█░█▀▀░█░░░█░░░░░█▄█░▀█▀░█▀█░█▀█░█▀▄░█▀█"
+        putStrLn"   ░█▀█░█▀█░▀▀█░█▀▄░█▀▀░█░░░█░░░░░█░█░░█░░█░█░█▀█░█░█░█░█"
+        putStrLn"   ░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░░░▀░▀░▀▀▀░▀░▀░▀░▀░▀▀░░▀▀▀"
+        putStrLn "  \n********************************************************\n"
+        putStrLn "  Digite o numero da opção desejada:"
+        putStrLn "    1 - CADASTRAR JOGADOR.                     " 
+        putStrLn "    2 - JOGAR.                                  "
+        putStrLn "    3 - VISUALIZAR RANKING.                  "
+        putStrLn "    0 - SAIR.                                   "
         putStrLn "********************************************************\n"
-        putStrLn "Digite a opcão desejada:"
         op <- getChar
         getChar
-        executarOpcao dadosJogador op
+        optionMenu playerData op
 
 
 -- function to manipulate chosen option
-executarOpcao :: Jogadores -> Char -> IO Jogadores
-executarOpcao dadosJogador '1' = cadastrarJogador dadosJogador
-executarOpcao dadosJogador '2' = prepararJogo dadosJogador
-executarOpcao dadosJogador '0' = do 
+optionMenu :: Players -> Char -> IO Players
+optionMenu playerData '1' = registerPlayer playerData
+optionMenu playerData '2' = prepareGame playerData
+optionMenu playerData '3' = do 
+                                  putStrLn "\nRanking dos Players:\n" 
+                                  if (null playerData) then do
+                                      putStrLn("Não há Players cadastrados.") 
+                                  else
+                                    showRanking(reverse (ordenar playerData))
+                                  putStrLn"\nPressione <Enter> para voltar ao menu. "
+                                  getChar   
+                                  menu playerData
+optionMenu playerData '0' = do 
         putStrLn("Esperamos ver você novamente! :) \n")
-        return dadosJogador
-executarOpcao dadosJogador _ = do
+        return playerData
+optionMenu playerData _ = do
         putStrLn ("\nOpção inválida! Tente novamente!")
         putStr ("Pressione <Enter> para voltar ao menu. :)")
         getChar
-        menu dadosJogador
+        menu playerData
 
 
 -- function responsible for the registration of players
-cadastrarJogador :: Jogadores -> IO Jogadores
-cadastrarJogador dadosJogador = do
-        nome <- getString "Digite o nome do jogador:"
-        if (existeJogador dadosJogador nome) then do
+registerPlayer :: Players -> IO Players
+registerPlayer playerData = do
+        name <- transformString "Digite o nome do jogador:"
+        if (existsPlayer playerData name) then do
           putStr "Esse nome já foi cadastrado. :( Escolha outro!\n"
           putStr "Pressione <Enter> para voltar ao menu. :)"
           getChar
-          menu dadosJogador
+          menu playerData
 
         else do
           -- open file to write
-          file <- openFile "dadosJogador.txt" WriteMode 
-          hPutStrLn file (show ((Jogador nome 0):dadosJogador)) 
+          file <- openFile "playerData.txt" WriteMode 
+          hPutStrLn file (show ((Player name 0):playerData)) 
           -- close file
           hClose file 
-          putStrLn ("\nUsuário " ++ nome ++ " cadastrado com sucesso!! :D\n")
+          putStrLn ("\nUsuário " ++ name ++ " cadastrado com sucesso!! :D\n")
           putStr "Pressione <Enter> para voltar ao menu. :)"
           getChar 
           -- new list to menu
-          menu ((Jogador nome 0):dadosJogador) 
+          menu ((Player name 0):playerData) 
 
 
--- function that checks if a player already exists
-existeJogador :: Jogadores -> Nome -> Bool
-existeJogador [] _ = False 
-existeJogador ((Jogador n p):xs) nome
-        | (n == nome) = True
-        | otherwise = existeJogador xs nome
 
-prepararJogo :: Jogadores -> IO Jogadores
-prepararJogo dadosJogador = do
-            jogador1 <- getString "\nDigite o nome do primeiro jogador: "
-            -- test if player 1 exists
-            if not (existeJogador dadosJogador jogador1) then do
+-- function that checks if a jogador already exists
+existsPlayer :: Players -> Name -> Bool
+existsPlayer [] _ = False 
+existsPlayer ((Player n p):xs) name
+        | (n == name) = True
+        | otherwise = existsPlayer xs name
+
+-- function that checks if the player already are in the game
+areInGame :: String -> String -> Bool
+areInGame [] [] = True
+areInGame _ [] = False
+areInGame [] _ = False
+areInGame (x:xs) (y:ys) = (x == y) && areInGame xs ys
+
+
+
+-- function to prepare game
+-- receive the players who will participate
+prepareGame :: Players -> IO Players
+prepareGame playerData = do
+            player1 <- transformString "\nDigite o nome do primeiro jogador: "
+            -- test if jogador 1 exists
+            if not (existsPlayer playerData player1) then do
               putStr "Esse jogador não existe! :("
               putStr "\nPressione <Enter> para voltar ao menu. :)"
               getChar 
-              menu dadosJogador
+              menu playerData
             else do
-              jogador2 <- getString "\nDigite o nome do segundo jogador:"
-              -- test if player 2 exists
-              if not (existeJogador dadosJogador jogador2) then do
+              player2 <- transformString "\nDigite o nome do segundo jogador: "
+              
+              if not (existsPlayer playerData player2) then do
                 putStr "Esse jogador não existe! :("
                 putStr "\nPressione <Enter> para voltar ao menu. :)"
                 getChar 
-                menu dadosJogador
+                menu playerData
               else do
+                if (areInGame player1 player2) == True then do 
+                  putStr "Esse jogador já está no jogo"
+                  putStr "\nPressione <Enter> para voltar ao menu. :)"
+                  getChar
+                  menu playerData
+
+                else do
                 -- if players exists
-                novoJogo dadosJogador jogador1 jogador2
+                  newGame playerData player1 player2
+
+createPlayerMap :: Players -> [[Int]] -> [[Int]] -> Name -> Name -> Vez -> IO Players
+createPlayerMap playerData player_one_map player_two_map player1 player2 vez = do
+  
+    ----------------- PLAYER 1 -----------------
+    putStrLn ("\nJogador(a) " ++ player1 ++ ": Qual a primeira coordenada (x,y)?")
+    stringPlayerOne1 <- getLine     
+    let coordShipPlayerOne1 = convertStringToCoordinates stringPlayerOne1
+    let player_one_map1 = updateMatrix player_one_map 1 coordShipPlayerOne1
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_one_map1
+
+    putStrLn ("\nJogador(a) " ++ player1 ++ ": Qual a segunda coordenada (x,y)?")
+    stringPlayerOne2 <- getLine     
+    let coordShipPlayerOne2 = convertStringToCoordinates stringPlayerOne2
+    let player_one_map2 = updateMatrix player_one_map1 1 coordShipPlayerOne2
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_one_map2
+
+    putStrLn ("\nJogador(a) " ++ player1 ++ ": Qual a terceira coordenada (x,y)?")
+    stringPlayerOne3 <- getLine     
+    let coordShipPlayerOne3 = convertStringToCoordinates stringPlayerOne3
+    let final_player_one_map = updateMatrix player_one_map2 1 coordShipPlayerOne3
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap final_player_one_map
+
+    ----------------- PLAYER 2 -----------------
+    putStrLn ("\nJogador(a) " ++ player2 ++ ": Qual a primeira coordenada (x,y)?")
+    stringPlayerTwo1 <- getLine     
+    let coordShipPlayerTwo1 = convertStringToCoordinates stringPlayerTwo1
+    let player_two_map1 = updateMatrix player_two_map 1 coordShipPlayerTwo1
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_two_map1
+
+    putStrLn ("\nJogador(a) " ++ player2 ++ ": Qual a segunda coordenada (x,y)?")
+    stringPlayerTwo2 <- getLine     
+    let coordShipPlayerTwo2 = convertStringToCoordinates stringPlayerTwo2
+    let player_two_map2 = updateMatrix player_two_map1 1 coordShipPlayerTwo2
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap player_two_map2
+
+    putStrLn ("\nJogador(a) " ++ player2 ++ ": Qual a terceira coordenada (x,y)?")
+    stringPlayerTwo3 <- getLine     
+    let coordShipPlayerTwo3 = convertStringToCoordinates stringPlayerTwo3
+    let final_player_two_map = updateMatrix player_two_map2 1 coordShipPlayerTwo3
+    putStrLn ("Posição cadastrada com sucesso!\n")
+
+    printMap final_player_two_map
+    system "cls || clear"
+    putStrLn ("\n\n-----------------------------------------------------------------\n")
+    putStrLn ("START COMBATE: \"" ++ player1 ++ " VS " ++ player2 ++ "\"!!!")
+
+    runGame playerData final_player_one_map final_player_two_map player1 player2 0
 
 
 -- function that starts new game
-novoJogo :: Jogadores -> Nome -> Nome -> IO Jogadores
-novoJogo dadosJogador jogador1 jogador2 = do 
+newGame :: Players -> Name -> Name -> IO Players
+newGame playerData player1 player2 = do 
     putStrLn ("\n-----------------------------------------------------------------\n")
-    putStrLn ("START COMBATE: \"" ++ jogador1 ++ " VS " ++ jogador2 ++ "\"!!!")
-    runGame dadosJogador player_one_map player_two_map jogador1 jogador2 1
+    putStrLn ("ANTES DE INCIARMOS... DIGITE AS COORDENADAS INICIAIS DAS SUAS EMBARCÇÕES:")
+
+    createPlayerMap playerData player_one_map player_two_map player1 player2 0
                     
 
 -- game recursion function
-runGame :: Jogadores -> [[Int]] -> [[Int]] -> Nome -> Nome -> Int -> IO Jogadores
-runGame dadosJogador player_one_map player_two_map jogador1 jogador2 vez = do
+runGame :: Players -> [[Int]] -> [[Int]] -> Name -> Name -> Vez -> IO Players
+runGame playerData player_one_map player_two_map player1 player2 vez = do
 
     if (checkShipsAlive player_two_map) == False || (checkShipsAlive player_one_map) == False
     then do 
-      putStrLn "Fim de Jogo!"
+      putStrLn "Fim de jogo!"
       if (checkShipsAlive player_one_map == False)
       then do
-        putStrLn "Jogador 2 venceu!!"
+        putStrLn ("Parabéns, " ++ player2 ++"!! Você venceu!!")
+
+        file_write <- openFile "playerData.txt" WriteMode
+        hPutStrLn file_write (show (updatePoint playerData player2))
+        hClose file_write
+
+        file_read <- openFile "playerData.txt" ReadMode
+        data_update <- hGetLine file_read
+        hClose file_write
+
         putStr "\nPressione <Enter> para voltar ao menu. :)"
         getChar
-        menu dadosJogador
+        menu (read data_update)
         
       else do
-        putStrLn "Jogador 1 venceu!!"
+        putStrLn ("Parabéns, " ++ player1 ++"!! Você venceu!!")
+
+        file_write <- openFile "playerData.txt" WriteMode
+        hPutStrLn file_write (show (updatePoint playerData player1))
+        hClose file_write
+
+        file_read <- openFile "playerData.txt" ReadMode
+        data_update <- hGetLine file_read
+        hClose file_write
+
         putStr "\nPressione <Enter> para voltar ao menu. :)"
         getChar
-        menu dadosJogador
+        menu (read data_update)
         
     else do
-      
-      printMap player_one_map
-      printMap player_two_map
+      if (vez == 0)
+        then do 
+          printMap player_two_map                
+          putStrLn ("\n" ++ player1 ++ " , é a sua vez! Qual coordenadas deseja atacar (x,y)?")
+          string <- getLine
+          let coord = convertStringToCoordinates string
+          let newMapaPlayer2 = updateMatrix player_two_map 2 coord
+          system "cls || clear"
+          runGame playerData player_one_map newMapaPlayer2 player1 player2 1
+        else do
+          printMap player_one_map 
+          putStrLn ("\n" ++ player2 ++ ", é a sua vez! Qual coordenada deseja para atacar (x,y)?")
+          string2 <- getLine
+          let coord2 = convertStringToCoordinates string2
+          let newMapaPlayer1 = updateMatrix player_one_map 2 coord2
+          system "cls || clear"
+          runGame playerData newMapaPlayer1 player_two_map player1 player2 0
 
-      putStrLn ("Jogador 1 - Qual coordenadas para atacar (x,y)?")
-      string <- getLine
-      let coord = convertStringToCoordinates string
-      let novoMapaJogador2 = updateMatrix player_two_map 2 coord
 
-      putStrLn "Jogador 2 - Qual coordenadas para atacar (x,y)?"
-      string2 <- getLine
-      let coord2 = convertStringToCoordinates string2
-      let novoMapaJogador1 = updateMatrix player_two_map 2 coord2
+-- function to update the points
+updatePoint :: Players -> String -> Players
+updatePoint ((Player name point) :xs) winner
+                    | (name == winner) = [(Player name (point +1))] ++ xs
+                    | otherwise = (Player name point):(updatePoint xs winner)
 
-      runGame dadosJogador novoMapaJogador1 novoMapaJogador2 jogador1 jogador2 vez
+
+-- show player ranking
+showRanking :: Players -> IO ()
+showRanking [] = putStrLn"--"
+showRanking (x:xs) = do 
+                        putStrLn((getName x) ++ " possui " ++ (show(getPoints x)) ++ " pontos")
+                        showRanking xs
+
+-- function that takes a player and returns the score
+getName :: Player -> Name
+getName (Player name _) = name
+
+
+-- function that takes a player and returns the score
+getPoints :: Player -> Point
+getPoints (Player _ point) = point
+
+
+-- function that defines the ordering criteria are the player's points
+ordenar :: Players -> Players
+ordenar playerData = sortBy (compare `on` getPoints ) playerData
 
 main :: IO ()
 main = do
-      {catch (ler_arquivo) tratar_erro;}
+      {catch (read_file) treat_erro;}
       where
-        -- tenta ler o arquivo
-        ler_arquivo = do
+        -- treat to read  file
+        read_file = do
         {
           -- open file to read
-          file <- openFile "dadosJogador.txt" ReadMode; 
-          dadosJogador <- hGetLine file;
+          file <- openFile "playerData.txt" ReadMode; 
+          playerData <- hGetLine file;
           -- close file
           hClose file;
-          menu (read dadosJogador);
+          menu (read playerData);
           return ()
         }
-        tratar_erro erro = if isDoesNotExistError erro then do
+        -- if dont exist, create file
+        treat_erro erro = if isDoesNotExistError erro then do
         {
           -- open file to write
-          file <- openFile "dadosPlayer.txt" WriteMode; 
+          file <- openFile "playerData.txt" WriteMode; 
           hPutStrLn file "[]";
           -- close file
           hClose file;
