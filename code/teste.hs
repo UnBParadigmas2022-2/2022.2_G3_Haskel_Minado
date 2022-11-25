@@ -143,6 +143,14 @@ existsPlayer ((Player n p):xs) name
         | (n == name) = True
         | otherwise = existsPlayer xs name
 
+-- function that checks if the player already are in the game
+areInGame :: String -> String -> Bool
+areInGame [] [] = True
+areInGame _ [] = False
+areInGame [] _ = False
+areInGame (x:xs) (y:ys) = (x == y) && areInGame xs ys
+
+
 
 -- function to prepare game
 -- receive the players who will participate
@@ -157,15 +165,22 @@ prepareGame playerData = do
               menu playerData
             else do
               player2 <- transformString "\nDigite o nome do segundo jogador: "
-              -- test if jogador 2 exists
+              
               if not (existsPlayer playerData player2) then do
                 putStr "Esse jogador não existe! :("
                 putStr "\nPressione <Enter> para voltar ao menu. :)"
                 getChar 
                 menu playerData
               else do
+                if (areInGame player1 player2) == True then do 
+                  putStr "Esse jogador já está no jogo"
+                  putStr "\nPressione <Enter> para voltar ao menu. :)"
+                  getChar
+                  menu playerData
+
+                else do
                 -- if players exists
-                newGame playerData player1 player2
+                  newGame playerData player1 player2
 
 createPlayerMap :: Players -> [[Int]] -> [[Int]] -> Name -> Name -> Vez -> IO Players
 createPlayerMap playerData player_one_map player_two_map player1 player2 vez = do
