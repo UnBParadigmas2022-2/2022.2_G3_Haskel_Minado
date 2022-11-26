@@ -52,7 +52,7 @@ Para rodar o programa:
         ghci
     
     4. Depois de ter entrado no Prelude, rode o comando abaixo:
-        :l teste.hs
+        :l Main.hs
     
     5. Por último, rode:
         *Main> main
@@ -87,10 +87,26 @@ Apresente, brevemente, como cada membro do grupo contribuiu para o projeto.
 
 ## Outros 
 Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não esqueça, entretanto, de informar sobre:
-(i) Lições Aprendidas;
-(ii) Percepções;
-(iii) Contribuições e Fragilidades, e
+
+(i) Lições Aprendidas
+
+-  Diferentes paradigmas tem formas diferentes de abordar os mesmos problemas, por exemplo, fazer um laço usando recursão em vez de estrutura de repetição.
+
+(ii) Percepções
+- Recursividade
+- Parsing
+
+(iii) Contribuições e Fragilidades
+
+-  Implementação de exceções
+-  Implementação de testes automatizados
+-  Refatoração para modularização
+
 (iV) Trabalhos Futuros.
+- Modularização do código
+- Mapa dinâmico
+- Tratamento de exceções
+- Colocar o mapa como matriz de char
 
 ## Fontes
 Referencie, adequadamente, as referências utilizadas.
