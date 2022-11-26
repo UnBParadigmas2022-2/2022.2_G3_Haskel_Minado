@@ -111,3 +111,5 @@ Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não es
 ## Fontes
 Referencie, adequadamente, as referências utilizadas.
 Indique ainda sobre fontes de leitura complementares.
+
+[Link da apresentação](https://youtu.be/3bS2a3tdY1A)
